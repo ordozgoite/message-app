@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		ED454D572CBF443700BF2CFD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = ED454D562CBF443700BF2CFD /* FirebaseAuth */; };
+		ED454D592CBF443700BF2CFD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = ED454D582CBF443700BF2CFD /* FirebaseCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		EDF21EDE2CA61E6200851886 /* SecretMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecretMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED454D592CBF443700BF2CFD /* FirebaseCore in Frameworks */,
+				ED454D572CBF443700BF2CFD /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = SecretMessage;
 			packageProductDependencies = (
+				ED454D562CBF443700BF2CFD /* FirebaseAuth */,
+				ED454D582CBF443700BF2CFD /* FirebaseCore */,
 			);
 			productName = SecretMessage;
 			productReference = EDF21EDE2CA61E6200851886 /* SecretMessage.app */;
@@ -94,6 +103,9 @@
 			);
 			mainGroup = EDF21ED52CA61E6200851886;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EDB3C7F12CBF404B00EEAE72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EDF21EDF2CA61E6200851886 /* Products */;
 			projectDirPath = "";
@@ -249,6 +261,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SecretMessage/SecretMessage.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SecretMessage/Preview Content\"";
@@ -278,6 +291,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SecretMessage/SecretMessage.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SecretMessage/Preview Content\"";
@@ -324,6 +338,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EDB3C7F12CBF404B00EEAE72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		ED454D562CBF443700BF2CFD /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDB3C7F12CBF404B00EEAE72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		ED454D582CBF443700BF2CFD /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDB3C7F12CBF404B00EEAE72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EDF21ED62CA61E6200851886 /* Project object */;
 }
