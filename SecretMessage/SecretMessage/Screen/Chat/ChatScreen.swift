@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatScreen: View {
     
+    @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var chatVM = ChatViewModel()
     //    @ObservedObject var socket: SocketService
     
@@ -17,21 +18,27 @@ struct ChatScreen: View {
             ZStack {
                 Chats()
             }
-//            .onAppear {
-//                updateChats()
-//                listenToMessages()
-//            }
+            //            .onAppear {
+            //                updateChats()
+            //                listenToMessages()
+            //            }
             //            .onChange(of: socket.status) { status in
             //                if status == .connected {
             //                    updateChats()
             //                }
             //            }
-            .navigationTitle("Chats")
-            //            .toolbar {
-            //                ToolbarItem(placement: .topBarTrailing) {
-            //                    SocketStatusView(socket: socket)
-            //                }
-            //            }
+            .navigationTitle("Your Chats")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        Text("Start a new chat")
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                    }
+                    
+//                    SocketStatusView(socket: socket)
+                }
+            }
         }
     }
     
@@ -75,4 +82,5 @@ struct ChatScreen: View {
 
 #Preview {
     ChatScreen()
+        .environmentObject(AuthViewModel())
 }

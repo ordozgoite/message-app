@@ -57,4 +57,5 @@ struct AuthScreen: View {
 
 #Preview {
     AuthScreen()
+        .environmentObject(AuthViewModel())
 }
