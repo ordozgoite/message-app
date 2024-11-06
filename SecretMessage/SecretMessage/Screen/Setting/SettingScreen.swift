@@ -36,4 +36,5 @@ struct SettingScreen: View {
 
 #Preview {
     SettingScreen()
+        .environmentObject(AuthViewModel())
 }

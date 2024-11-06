@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		ED454D572CBF443700BF2CFD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = ED454D562CBF443700BF2CFD /* FirebaseAuth */; };
 		ED454D592CBF443700BF2CFD /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = ED454D582CBF443700BF2CFD /* FirebaseCore */; };
+		EDE1991C2CC327A00065206C /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EDE1991B2CC327A00065206C /* CryptoSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			files = (
 				ED454D592CBF443700BF2CFD /* FirebaseCore in Frameworks */,
 				ED454D572CBF443700BF2CFD /* FirebaseAuth in Frameworks */,
+				EDE1991C2CC327A00065206C /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				ED454D562CBF443700BF2CFD /* FirebaseAuth */,
 				ED454D582CBF443700BF2CFD /* FirebaseCore */,
+				EDE1991B2CC327A00065206C /* CryptoSwift */,
 			);
 			productName = SecretMessage;
 			productReference = EDF21EDE2CA61E6200851886 /* SecretMessage.app */;
@@ -105,6 +108,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				EDB3C7F12CBF404B00EEAE72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				EDE1991A2CC327A00065206C /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EDF21EDF2CA61E6200851886 /* Products */;
@@ -348,6 +352,14 @@
 				minimumVersion = 11.3.0;
 			};
 		};
+		EDE1991A2CC327A00065206C /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -360,6 +372,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EDB3C7F12CBF404B00EEAE72 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		EDE1991B2CC327A00065206C /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EDE1991A2CC327A00065206C /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -9,9 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        AuthenticatedScreen()
-            .environmentObject(AuthViewModel())
-            .preferredColorScheme(.light)
+        TestCrypto()
+//        AuthenticatedScreen()
+//            .environmentObject(AuthViewModel())
+//            .preferredColorScheme(.light)
     }
 }
 
