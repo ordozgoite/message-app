@@ -14,7 +14,5 @@ struct FormattedMessage: Identifiable, Equatable, Hashable {
     var text: String
     var isCurrentUser: Bool
     var isFirst: Bool
-    var timeDivider: Int?
     var status: MessageStatus
-    var createdAt: Int
 }

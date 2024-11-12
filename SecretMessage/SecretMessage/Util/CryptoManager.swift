@@ -62,6 +62,14 @@ struct CryptoManager {
         }
     }
     
+    func convertBase64ToData(base64String: String) -> Data? {
+        guard let data = Data(base64Encoded: base64String) else {
+            print("Erro ao converter a string base64 em Data")
+            return nil
+        }
+        return data
+    }
+    
     func decryptMessage(ciphertext: Data, key: SymmetricKey) -> String? {
         do {
             let sealedBox = try ChaChaPoly.SealedBox(combined: ciphertext)
@@ -116,5 +124,13 @@ extension CryptoManager {
             return nil
         }
         return privateKeys[chatId]
+    }
+    
+    func stringToPrivateKey(base64String: String) -> P256.KeyAgreement.PrivateKey? {
+        guard let privateKeyData = Data(base64Encoded: base64String) else {
+            print("Erro ao converter a chave privada de Base64 para Data")
+            return nil
+        }
+        return try? P256.KeyAgreement.PrivateKey(rawRepresentation: privateKeyData)
     }
 }

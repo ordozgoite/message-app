@@ -9,11 +9,11 @@ import SwiftUI
 
 struct MessageScreen: View {
     
-    let chatId: String
-    let chatName: String
+    @EnvironmentObject var authVM: AuthViewModel
+    
+    let chat: FormattedChat
     
     @StateObject private var messageVM = MessageViewModel()
-//    @ObservedObject var socket: SocketService
     @Environment(\.presentationMode) var presentationMode
     @FocusState private var isFocused: Bool
     
@@ -25,9 +25,7 @@ struct MessageScreen: View {
                         ZStack {
                             VStack(spacing: 0) {
                                 ForEach(messageVM.formattedMessages) { message in
-                                    MessageView(message: message) {
-                                        // resend message
-                                    }
+                                    MessageView(message: message) {}
                                 }
                                 .onAppear {
                                     if let lastMessageId = messageVM.formattedMessages.last?.id {
@@ -55,41 +53,36 @@ struct MessageScreen: View {
                     }
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .refreshable {
-                    hapticFeedback(style: .soft)
-                    Task {
-                        try await getMessages(.oldest)
-                    }
-                }
                 
                 MessageComposer()
             }
         }
         .onAppear {
-            //            print("⚠️ Stored messages: \(messages)")
             Task {
-                try await getMessages(.newest)
+                try await getMessages()
             }
-            listenToMessages()
         }
-        .onDisappear {
-            stopListeningMessages()
+        .sheet(isPresented: $messageVM.isAddUserSheetDisplayed) {
+            AddUserToChatView(username: $messageVM.newUserUsername) {
+                Task {
+                    let token = try await authVM.getFirebaseToken()
+                    await messageVM.addUser(messageVM.newUserUsername, toChat: self.chat.id, token: token)
+                }
+            }
         }
-//        .onChange(of: socket.status) { status in
-//            if status == .connected {
-//                Task {
-//                    try await getMessages(.newest)
-//                }
-//            }
-//        }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 UserHeader()
             }
             
-//            ToolbarItem(placement: .topBarTrailing) {
-//                SocketStatusView(socket: socket)
-//            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    messageVM.isAddUserSheetDisplayed = true
+                } label: {
+                    Image(systemName: "person.badge.plus")
+                }
+                
+            }
         }
     }
     
@@ -98,18 +91,10 @@ struct MessageScreen: View {
     @ViewBuilder
     private func UserHeader() -> some View {
         HStack {
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(chatName)
-                    .font(.callout)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.gray)
-                
-                Image(systemName: "chevron.right")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 8, height: 8)
-                    .foregroundStyle(.gray)
-            }
+            Text(chat.chatName)
+                .font(.callout)
+                .fontWeight(.bold)
+                .foregroundStyle(.gray)
         }
         .padding(.bottom, 6)
     }
@@ -130,11 +115,12 @@ struct MessageScreen: View {
                 if !messageVM.messageText.isEmpty {
                     Button {
                         Task {
-//                            let token = try await authVM.getFirebaseToken()
-//                            try await messageVM.sendMessage(
-//                                chatId,
-//                                forChat: messageVM.messageText
-//                            )
+                            let token = try await authVM.getFirebaseToken()
+                            try await messageVM.sendMessage(
+                                messageVM.messageText,
+                                forChat: self.chat,
+                                token: token
+                            )
                         }
                     } label: {
                         Image(systemName: "paperplane.fill")
@@ -152,38 +138,9 @@ struct MessageScreen: View {
     
     //MARK: - Private Method
     
-    private func listenToMessages() {
-//        socket.socket?.on("message") { data, ack in
-//            if let message = data as? [Any] {
-//                print("📩 Received message: \(message)")
-//                messageVM.processMessage(message, toChat: chatId) { messageId in
-//                    emitReadCommand(forMessage: messageId)
-//                }
-//            }
-//        }
-    }
-    
-    private func emitReadCommand(forMessage messageId: String) {
-//        socket.socket?.emit("read", messageId)
-    }
-    
-    private func stopListeningMessages() {
-//        socket.socket?.off("message")
-    }
-    
-    enum FetchMessageType {
-        case newest
-        case oldest
-    }
-    
-    private func getMessages(_ type: FetchMessageType) async throws {
-//        let token = try await authVM.getFirebaseToken()
-//        switch type {
-//        case .newest:
-//            await messageVM.getLastMessages(chatId: chatId, token: token)
-//        case .oldest:
-//            await messageVM.getMessages(chatId: chatId, token: token)
-//        }
+    private func getMessages() async throws {
+        let token = try await authVM.getFirebaseToken()
+        await messageVM.getMessages(chat: chat, token: token)
     }
     
     private func scrollToMessage(withId messageId: String, usingProxy proxy: ScrollViewProxy, animated: Bool = true) {
@@ -196,13 +153,8 @@ struct MessageScreen: View {
         }
         
     }
-    
-    private func resendMessage(withId messageId: String) async throws {
-//        let token = try await authVM.getFirebaseToken()
-//        await messageVM.resendMessage(withTempId: messageId, token: token)
-    }
 }
 
 #Preview {
-//    MessageScreen(chatId: "1", username: "Amanda Hortêncio", otherUserUid: "1")
+    //    MessageScreen(chatId: "1", username: "Amanda Hortêncio", otherUserUid: "1")
 }

@@ -18,10 +18,14 @@ protocol SCServiceable {
     func getChatsByUser(token: String) async -> Result<[MongoChat], RequestError>
     func addUserToChat(chatId: String, username: String, token: String) async -> Result<MongoChat, RequestError>
     func savePubECDHKey(chatId: String, publicKey: String, token: String) async -> Result<MongoChat, RequestError>
+    
+    // Message
+    func postMessage(chatId: String, text: String, targetUserUid: String, token: String) async -> Result<MongoMessage, RequestError>
+    func getMessagesByChat(chatId: String, token: String) async -> Result<[MongoMessage], RequestError>
 }
 
 struct SCServices: HTTPClient, SCServiceable {
-    
+   
     static let shared = SCServices()
     private init() {}
     
@@ -51,5 +55,15 @@ struct SCServices: HTTPClient, SCServiceable {
     
     func savePubECDHKey(chatId: String, publicKey: String, token: String) async -> Result<MongoChat, RequestError> {
         return await sendRequest(endpoint: SCEndpoints.savePubECDHKey(chatId: chatId, publicKey: publicKey, token: token), responseModel: MongoChat.self)
+    }
+    
+    //MARK: - Message
+    
+    func postMessage(chatId: String, text: String, targetUserUid: String, token: String) async -> Result<MongoMessage, RequestError> {
+        return await sendRequest(endpoint: SCEndpoints.postMessage(chatId: chatId, text: text, targetUserUid: targetUserUid, token: token), responseModel: MongoMessage.self)
+    }
+    
+    func getMessagesByChat(chatId: String, token: String) async -> Result<[MongoMessage], RequestError> {
+        return await sendRequest(endpoint: SCEndpoints.getMessagesByChat(chatId: chatId, token: token), responseModel: [MongoMessage].self)
     }
 }

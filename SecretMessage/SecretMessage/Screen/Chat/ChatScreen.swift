@@ -11,7 +11,6 @@ struct ChatScreen: View {
     
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var chatVM = ChatViewModel()
-    //    @ObservedObject var socket: SocketService
     
     var body: some View {
         NavigationStack {
@@ -24,15 +23,9 @@ struct ChatScreen: View {
                     NewChat()
                 }
             }
-                        .onAppear {
-                            updateChats()
-//                            listenToMessages()
-                        }
-            //            .onChange(of: socket.status) { status in
-            //                if status == .connected {
-            //                    updateChats()
-            //                }
-            //            }
+            .onAppear {
+                updateChats()
+            }
             .navigationTitle("\(authVM.username)'s Chats")
             .onAppear {
                 Task {
@@ -47,8 +40,6 @@ struct ChatScreen: View {
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
-                    
-//                    SocketStatusView(socket: socket)
                 }
             }
         }
@@ -65,7 +56,7 @@ struct ChatScreen: View {
                 }
             } else {
                 ForEach($chatVM.chats) { $chat in
-                    NavigationLink(destination: MessageScreen(chatId: chat.id, chatName: chat.chatName)
+                    NavigationLink(destination: MessageScreen(chat: chat)
                     ) {
                         ChatView(chat: chat)
                     }
@@ -94,20 +85,12 @@ struct ChatScreen: View {
         await chatVM.createNewChat(token: token)
     }
     
-        private func updateChats() {
-            Task {
-                let token = try await authVM.getFirebaseToken()
-                await chatVM.getChats(token: token)
-            }
+    private func updateChats() {
+        Task {
+            let token = try await authVM.getFirebaseToken()
+            await chatVM.getChats(token: token)
         }
-    
-    //    private func listenToMessages() {
-    //        print("⚠️ listenToMessages")
-    //        socket.socket?.on("chat") { data, ack in
-    //            print("⚠️ updateChats")
-    //            updateChats()
-    //        }
-    //    }
+    }
 }
 
 #Preview {

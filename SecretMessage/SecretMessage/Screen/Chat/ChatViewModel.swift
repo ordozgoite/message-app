@@ -16,7 +16,6 @@ class ChatViewModel: ObservableObject {
     @Published var chats: [FormattedChat] = []
     @Published var isLoading: Bool = false
     @Published var overlayError: (Bool, LocalizedStringKey) = (false, "")
-    @Published var isInitialChatsFetched: Bool = false
     
     // New Chat
     @Published var isNewChatViewDisplayed: Bool = false
@@ -31,7 +30,7 @@ class ChatViewModel: ObservableObject {
         switch result {
         case .success(let chats):
             self.chats = formatChats(chats)
-            isInitialChatsFetched = true
+            verifyKeysInChats(token: token)
         case .failure:
             overlayError = (true, ErrorMessage.defaultErrorMessage)
         }
@@ -43,6 +42,18 @@ class ChatViewModel: ObservableObject {
             formattedChats.append(chat.formatChat())
         }
         return formattedChats
+    }
+    
+    private func verifyKeysInChats(token: String) {
+        for chat in chats {
+            let userUids = chat.publicKeys.keys
+            print("⚠️ userUids: \(userUids)")
+            if !userUids.contains(LocalState.currentUserUid) {
+                print("⚠️ Gerando chaves para chat \(chat.id)")
+                let pubKey = generateECDHKeys(forChat: chat.id)
+                sendPubKey(pubKey, toChat: chat.id, token: token)
+            }
+        }
     }
     
     func createNewChat(token: String) async {

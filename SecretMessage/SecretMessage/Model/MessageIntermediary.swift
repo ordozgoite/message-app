@@ -12,8 +12,6 @@ struct MessageIntermediary {
     var id: String
     var chatId: String
     var text: String
-    var isRead: Bool
-    var createdAt: Int
     var status: MessageStatus?
     var isCurrentUser: Bool
     
@@ -24,9 +22,7 @@ struct MessageIntermediary {
             text: self.text,
             isCurrentUser: self.isCurrentUser,
             isFirst: isFirst,
-            timeDivider: timeDivider,
-            status: self.status ?? .sent,
-            createdAt: self.createdAt
+            status: self.status ?? .sent
         )
     }
 }

@@ -16,8 +16,6 @@ struct MessageView: View {
     var resendMessage: () -> ()
     
     var body: some View {
-        Time()
-        
         HStack {
             TextBubble(message.text)
             
@@ -29,18 +27,6 @@ struct MessageView: View {
             case .failed:
                 Failed()
             }
-        }
-    }
-    
-    //MARK: - Time
-    
-    @ViewBuilder
-    private func Time() -> some View {
-        if let timeDivider = message.timeDivider {
-            Text(timeDivider.convertTimestampToDate().formatDatetoMessage())
-                .foregroundStyle(.gray)
-                .font(.caption)
-                .padding(.vertical, 10)
         }
     }
     
@@ -82,16 +68,16 @@ struct MessageView: View {
 }
 
 #Preview {
-    MessageView(message:
-                    FormattedMessage(
-                        id: "1",
-                        chatId: "1",
-                        text: "Essa é uma mensagem secreta",
-                        isCurrentUser: true,
-                        isFirst: true,
-                        status: .sent,
-                        createdAt: 1
-                    ),
-                resendMessage: {}
-    )
+//    MessageView(message:
+//                    FormattedMessage(
+//                        id: "1",
+//                        chatId: "1",
+//                        text: "Essa é uma mensagem secreta",
+//                        isCurrentUser: true,
+//                        isFirst: true,
+//                        status: .sent,
+//                        createdAt: 1
+//                    ),
+//                resendMessage: {}
+//    )
 }

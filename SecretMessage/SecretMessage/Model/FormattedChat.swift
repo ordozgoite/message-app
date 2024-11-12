@@ -10,4 +10,6 @@ import Foundation
 struct FormattedChat: Codable, Identifiable, Equatable {
     let id: String
     let chatName: String
+    let participantUserUids: [String]
+    let publicKeys: [String: String]
 }
