@@ -17,6 +17,8 @@ struct ChatScreen: View {
         NavigationStack {
             ZStack {
                 Chats()
+                
+                NewChat()
             }
             //            .onAppear {
             //                updateChats()
@@ -36,8 +38,8 @@ struct ChatScreen: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        Text("Start a new chat")
+                    Button {
+                        chatVM.isNewChatViewDisplayed = true
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
@@ -59,7 +61,7 @@ struct ChatScreen: View {
                 }
             } else {
                 ForEach($chatVM.chats) { $chat in
-                    NavigationLink(destination: MessageScreen(chatId: chat.id, username: chat.chatName, otherUserUid: chat.otherUserUid)
+                    NavigationLink(destination: MessageScreen(chatId: chat.id, chatName: chat.chatName)
                     ) {
                         ChatView(chat: chat)
                     }
@@ -68,7 +70,25 @@ struct ChatScreen: View {
         }
     }
     
+    //MARK: - New Chat
+    
+    @ViewBuilder
+    private func NewChat() -> some View {
+        if chatVM.isNewChatViewDisplayed {
+            NewChatView(groupName: $chatVM.newChatName, isPresented: $chatVM.isNewChatViewDisplayed, isLoading: $chatVM.isCreatingNewChat) {
+                Task {
+                    try await createNewChat()
+                }
+            }
+        }
+    }
+    
     //MARK: - Private Method
+    
+    private func createNewChat() async throws {
+        let token = try await authVM.getFirebaseToken()
+        await chatVM.createNewChat(token: token)
+    }
     
     //    private func updateChats() {
     //        Task {

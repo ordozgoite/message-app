@@ -10,8 +10,7 @@ import SwiftUI
 struct MessageScreen: View {
     
     let chatId: String
-    let username: String
-    let otherUserUid: String
+    let chatName: String
     
     @StateObject private var messageVM = MessageViewModel()
 //    @ObservedObject var socket: SocketService
@@ -100,7 +99,7 @@ struct MessageScreen: View {
     private func UserHeader() -> some View {
         HStack {
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(username)
+                Text(chatName)
                     .font(.callout)
                     .fontWeight(.bold)
                     .foregroundStyle(.gray)
@@ -205,5 +204,5 @@ struct MessageScreen: View {
 }
 
 #Preview {
-    MessageScreen(chatId: "1", username: "Amanda Hortêncio", otherUserUid: "1")
+//    MessageScreen(chatId: "1", username: "Amanda Hortêncio", otherUserUid: "1")
 }
