@@ -14,13 +14,21 @@ struct AuthScreen: View {
     
     var body: some View {
         VStack {
-            Spacer()
-            
             LogoView()
             
             Spacer()
             
+            Inputs()
+            
+            Spacer()
+            
+            AuthButton()
+            
             SiwA()
+            
+            Button(authVM.flow == .login ? "Create New Account" : "I already have an account") {
+                authVM.flow = authVM.flow == .login ? .signUp : .login
+            }
         }
         .padding()
     }
@@ -39,6 +47,35 @@ struct AuthScreen: View {
             .font(.largeTitle)
             .fontWeight(.bold)
             .foregroundStyle(.gray)
+    }
+    
+    //MARK: - Inputs
+    
+    @ViewBuilder
+    private func Inputs() -> some View {
+        VStack {
+            TextField("E-mail", text: $authVM.emailInput)
+                
+            SecureField("Password", text: $authVM.passwordInput)
+        }
+        .textInputAutocapitalization(.never)
+        .textFieldStyle(.roundedBorder)
+    }
+    
+    //MARK: - Auth Button
+    
+    @ViewBuilder
+    private func AuthButton() -> some View {
+        SCButton(title: authVM.flow == .login ? "Sign in" : "Sign up") {
+            Task {
+                switch authVM.flow {
+                case .login:
+                    await authVM.signInWithEmailPassword()
+                case .signUp:
+                    await authVM.signUpWithEmailPassword()
+                }
+            }
+        }
     }
     
     //MARK: - SiwA

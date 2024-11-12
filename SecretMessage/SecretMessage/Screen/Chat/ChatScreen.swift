@@ -16,20 +16,24 @@ struct ChatScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Chats()
-                
-                NewChat()
+                if chatVM.isLoading {
+                    ProgressView()
+                } else {
+                    Chats()
+                    
+                    NewChat()
+                }
             }
-            //            .onAppear {
-            //                updateChats()
-            //                listenToMessages()
-            //            }
+                        .onAppear {
+                            updateChats()
+//                            listenToMessages()
+                        }
             //            .onChange(of: socket.status) { status in
             //                if status == .connected {
             //                    updateChats()
             //                }
             //            }
-            .navigationTitle("Your Chats")
+            .navigationTitle("\(authVM.username)'s Chats")
             .onAppear {
                 Task {
                     let token = try await authVM.getFirebaseToken()
@@ -90,12 +94,12 @@ struct ChatScreen: View {
         await chatVM.createNewChat(token: token)
     }
     
-    //    private func updateChats() {
-    //        Task {
-    //            let token = try await authVM.getFirebaseToken()
-    //            await chatListVM.getChats(token: token)
-    //        }
-    //    }
+        private func updateChats() {
+            Task {
+                let token = try await authVM.getFirebaseToken()
+                await chatVM.getChats(token: token)
+            }
+        }
     
     //    private func listenToMessages() {
     //        print("⚠️ listenToMessages")

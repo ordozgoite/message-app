@@ -15,6 +15,18 @@ struct CryptoManager {
         return (privateKey, publicKey)
     }
     
+    func publicKeyToString(publicKey: P256.KeyAgreement.PublicKey) -> String {
+        let publicKeyData = publicKey.rawRepresentation
+        return publicKeyData.base64EncodedString()
+    }
+
+    func stringToPublicKey(base64String: String) -> P256.KeyAgreement.PublicKey? {
+        guard let publicKeyData = Data(base64Encoded: base64String) else {
+            return nil
+        }
+        return try? P256.KeyAgreement.PublicKey(rawRepresentation: publicKeyData)
+    }
+    
     func generateSharedSecret(privateKey: P256.KeyAgreement.PrivateKey, peerPublicKey: P256.KeyAgreement.PublicKey) -> SymmetricKey {
         let sharedSecret = try! privateKey.sharedSecretFromKeyAgreement(with: peerPublicKey)
         let symmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
@@ -87,5 +99,22 @@ struct CryptoManager {
         } else {
             print("Falha na criptografia.")
         }
+    }
+}
+
+//MARK: - User Defaults
+
+extension CryptoManager {
+    func persistPrivateKey(chatId: String, privateKey: String) {
+        var privateKeys = UserDefaults.standard.dictionary(forKey: "privateKeys") as? [String: String] ?? [:]
+        privateKeys[chatId] = privateKey
+        UserDefaults.standard.set(privateKeys, forKey: "privateKeys")
+    }
+    
+    func retrievePrivateKey(chatId: String) -> String? {
+        guard let privateKeys = UserDefaults.standard.dictionary(forKey: "privateKeys") as? [String: String] else {
+            return nil
+        }
+        return privateKeys[chatId]
     }
 }
