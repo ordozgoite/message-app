@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseAuth
+import SwiftUI
 
 // For Sign in with Apple
 import AuthenticationServices
@@ -23,7 +24,11 @@ class AuthViewModel: ObservableObject {
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var errorMessage = ""
     @Published var user: User?
-//    @Published var displayName = ""
+    @Published var username: String = ""
+    @Published var overlayError: (Bool, LocalizedStringKey) = (false, "")
+    @Published var isUserInfoFetched: Bool = false
+    
+    @Published var usernameInput: String = ""
     
     private var currentNonce: String?
     
@@ -43,6 +48,10 @@ class AuthViewModel: ObservableObject {
           }
         }
       }
+    
+    func getFirebaseToken() async throws -> String {
+        return try await user?.getIDToken() ?? ""
+    }
 }
 
 extension AuthViewModel {
@@ -154,6 +163,80 @@ extension AuthViewModel {
     }
   }
 
+}
+
+//MARK: - SC Methods
+
+extension AuthViewModel {
+    func postNewUser(token: String) async -> Bool {
+        let result = await SFServices.shared.postNewUser(username: self.usernameInput, token: token)
+        
+        switch result {
+        case .success(let user):
+            updateCurrentInformation(for: user)
+        case .failure(let error):
+            if error == .conflict {
+                overlayError = (true, ErrorMessage.usernameInUseMessage)
+                return true
+            } else {
+                signOut()
+                overlayError = (true, ErrorMessage.defaultErrorMessage)
+            }
+        }
+        return false
+    }
+    
+    func getUserInfo(token: String) async -> Bool {
+        let result = await SFServices.shared.getUserInfo(token: token)
+        
+        switch result {
+        case .success(let user):
+            updateCurrentInformation(for: user)
+        case .failure(let error):
+            if error == .dataNotFound {
+                return true
+            } else {
+                signOut()
+                overlayError = (true, ErrorMessage.defaultErrorMessage)
+            }
+        }
+        return false
+    }
+    
+//    private func deleteUser() async throws -> Bool {
+//        let token = try await getFirebaseToken()
+//        let result = await AYServices.shared.deleteUser(token: token)
+//        
+//        switch result {
+//        case .success:
+//            return true
+//        case .failure:
+//            return false
+//        }
+//    }
+    
+    private func updateCurrentInformation(for user: MongoUser) {
+        LocalState.currentUserUid = user.userUid
+        self.username = user.username
+        self.isUserInfoFetched = true
+    }
+    
+    func isUsernameValid() -> Bool {
+        let regex = try! NSRegularExpression(pattern: "^[a-zA-Z0-9._]+$")
+        let range = NSRange(location: 0, length: usernameInput.utf16.count)
+        let isUserNameValid = regex.firstMatch(in: usernameInput, options: [], range: range) != nil
+        if !isUserNameValid { overlayError.1 = "Invalid username format." }
+        return isUserNameValid
+    }
+    
+    private func resetUserInfo() {
+        username = ""
+        isUserInfoFetched = false
+    }
+    
+    private func resetInputs() {
+        usernameInput = ""
+    }
 }
 
 // Adapted from https://auth0.com/docs/api-auth/tutorials/nonce#generate-a-cryptographically-random-nonce

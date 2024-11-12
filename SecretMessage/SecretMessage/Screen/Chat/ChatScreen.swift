@@ -28,6 +28,12 @@ struct ChatScreen: View {
             //                }
             //            }
             .navigationTitle("Your Chats")
+            .onAppear {
+                Task {
+                    let token = try await authVM.getFirebaseToken()
+                    print("🔑 FIREBASE TOKEN: \(token)")
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {

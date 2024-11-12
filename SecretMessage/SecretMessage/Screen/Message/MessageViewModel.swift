@@ -8,12 +8,16 @@
 import Foundation
 import SwiftUI
 import AVFoundation
+import CryptoKit
 
 @MainActor
 class MessageViewModel: ObservableObject {
     
     private var audioPlayer: AVAudioPlayer?
     private var receivedMessageIds: [String] = []
+    private let cryptoManager = CryptoManager()
+    
+    @Published var sharedSecretA: SymmetricKey?
     
     @Published var formattedMessages: [FormattedMessage] = []
     @Published var intermediaryMessages: [MessageIntermediary] = [] {
@@ -52,27 +56,35 @@ class MessageViewModel: ObservableObject {
     
     //MARK: - Send Message
     
-    func sendMessage(forChat chatId: String, text: String) async throws {
+    func sendMessage(_ text: String, forChat chatId: String, token: String) async throws {
         resetInputs()
-        let messagesToBeSent = getMessagesToBeSent(chatId: chatId, text: text)
-        displayMessages(fromArray: messagesToBeSent)
-        let encryptedText = encryptText(text)
-        
-        //        await withTaskGroup(of: Void.self) { group in
-        //            for message in messagesToBeSent {
-        //                group.addTask {
-        //                    do {
-        //                        try await self.sendMessage(message, token: token)
-        //                    } catch {
-        //                        print("Error sending message: \(error)")
-        //                    }
-        //                }
-        //            }
-        //        }
+        if let encryptedMessage = encryptText(text) {
+            let messagesToBeSent = getMessagesToBeSent(chatId: chatId, text: text)
+            displayMessages(fromArray: messagesToBeSent)
+            await withTaskGroup(of: Void.self) { group in
+                for message in messagesToBeSent {
+                    group.addTask {
+                        do {
+//                            try await self.sendMessage(message, token: token)
+                            // send encypted text
+                        } catch {
+                            print("Error sending message: \(error)")
+                        }
+                    }
+                }
+            }
+        } else {
+            overlayError = (true, ErrorMessage.encryptErrorMessage)
+        }
     }
     
     private func resetInputs() {
         self.messageText = ""
+    }
+    
+    private func encryptText(_ text: String) -> String? {
+        let ciphertext = cryptoManager.encryptMessage(message: text, key: self.sharedSecretA!)
+        return ciphertext?.base64EncodedString()
     }
     
     private func getMessagesToBeSent(chatId: String, text: String) -> [MessageIntermediary] {
@@ -90,11 +102,6 @@ class MessageViewModel: ObservableObject {
             intermediaryMessages.append(message)
             self.lastMessageAdded = message.id
         }
-    }
-    
-    func encryptText(_ text: String) -> String {
-        // encrypt message text
-        return ""
     }
     
     private func sendMessage(_ message: MessageIntermediary, token: String) async throws {

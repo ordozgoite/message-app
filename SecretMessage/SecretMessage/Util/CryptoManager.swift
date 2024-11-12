@@ -26,6 +26,19 @@ struct CryptoManager {
         return symmetricKey
     }
     
+    func generateFinalSessionKey(sharedSecrets: [SymmetricKey]) -> SymmetricKey {
+        // Concatenar todos os segredos compartilhados
+        var combinedData = Data()
+        for secret in sharedSecrets {
+            combinedData.append(secret.withUnsafeBytes { Data($0) })
+        }
+        
+        // Gerar a chave de sessão final a partir da combinação dos segredos usando uma hash
+        let finalKeyData = SHA256.hash(data: combinedData)
+        let finalSessionKey = SymmetricKey(data: finalKeyData)
+        return finalSessionKey
+    }
+    
     func encryptMessage(message: String, key: SymmetricKey) -> Data? {
         do {
             let messageData = message.data(using: .utf8)!
@@ -53,14 +66,14 @@ struct CryptoManager {
         // Gerando chaves ECDH para duas partes (usuário A e usuário B)
         let userAKeys = generateECDHKeys()
         let userBKeys = generateECDHKeys()
-
+        
         // Gerando o segredo compartilhado (a chave simétrica)
         let sharedSecretA = generateSharedSecret(privateKey: userAKeys.privateKey, peerPublicKey: userBKeys.publicKey)
         let sharedSecretB = generateSharedSecret(privateKey: userBKeys.privateKey, peerPublicKey: userAKeys.publicKey)
-
+        
         // Exemplo de mensagem a ser criptografada
         let mensagemOriginal = "Esta é uma mensagem secreta."
-
+        
         // Criptografando a mensagem usando a chave compartilhada com ChaCha20-Poly1305
         if let mensagemCriptografada = encryptMessage(message: mensagemOriginal, key: sharedSecretA) {
             print("Mensagem criptografada: \(mensagemCriptografada.base64EncodedString())")
