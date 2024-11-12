@@ -15,16 +15,14 @@ struct ChatScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if chatVM.isLoading {
-                    ProgressView()
-                } else {
-                    Chats()
-                    
-                    NewChat()
-                }
+                Chats()
+                
+                NewChat()
             }
             .onAppear {
-                updateChats()
+                Task {
+                    try await updateChats()
+                }
             }
             .navigationTitle("\(authVM.username)'s Chats")
             .onAppear {
@@ -85,11 +83,21 @@ struct ChatScreen: View {
         await chatVM.createNewChat(token: token)
     }
     
-    private func updateChats() {
-        Task {
-            let token = try await authVM.getFirebaseToken()
-            await chatVM.getChats(token: token)
+    private func updateChats() async throws {
+        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            Task {
+                do {
+                    try await self.getChats()
+                } catch {
+                    print("Erro ao atualizar mensagens: \(error)")
+                }
+            }
         }
+    }
+    
+    private func getChats() async throws {
+        let token = try await authVM.getFirebaseToken()
+        await chatVM.getChats(token: token)
     }
 }
 

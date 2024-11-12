@@ -59,7 +59,7 @@ struct MessageScreen: View {
         }
         .onAppear {
             Task {
-                try await getMessages()
+                try await updateMessages()
             }
         }
         .sheet(isPresented: $messageVM.isAddUserSheetDisplayed) {
@@ -137,6 +137,18 @@ struct MessageScreen: View {
     }
     
     //MARK: - Private Method
+    
+    private func updateMessages() async throws {
+        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            Task {
+                do {
+                    try await self.getMessages()
+                } catch {
+                    print("Erro ao atualizar mensagens: \(error)")
+                }
+            }
+        }
+    }
     
     private func getMessages() async throws {
         let token = try await authVM.getFirebaseToken()

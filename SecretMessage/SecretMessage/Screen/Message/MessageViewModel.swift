@@ -36,7 +36,7 @@ class MessageViewModel: ObservableObject {
         switch result {
         case .success(let messages):
             let decryptedMessages = decryptMessages(messages, inChat: chat)
-            formatMessages(decryptedMessages)
+            displayMessages(decryptedMessages)
         case .failure:
             overlayError = (true, ErrorMessage.defaultErrorMessage)
         }
@@ -60,10 +60,12 @@ class MessageViewModel: ObservableObject {
         return decryptedMessages
     }
     
-    private func formatMessages(_ messages: [MongoMessage]) {
+    private func displayMessages(_ messages: [MongoMessage]) {
+        var formattedMessages: [FormattedMessage] = []
         for message in messages {
             formattedMessages.append(message.format())
         }
+        self.formattedMessages = formattedMessages
     }
     
     //MARK: - Send Message
@@ -105,7 +107,14 @@ class MessageViewModel: ObservableObject {
     //MARK: - Add User
     
     func addUser(_ username: String, toChat chatId: String, token: String) async {
-        self.newUserUsername = ""
-        _ = await SCServices.shared.addUserToChat(chatId: chatId, username: username, token: token)
+        let result = await SCServices.shared.addUserToChat(chatId: chatId, username: username, token: token)
+        
+        switch result {
+        case .success:
+            self.isAddUserSheetDisplayed = false
+            self.newUserUsername = ""
+        case .failure:
+            overlayError = (true, ErrorMessage.defaultErrorMessage)
+        }
     }
 }
