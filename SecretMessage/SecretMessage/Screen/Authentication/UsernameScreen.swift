@@ -13,7 +13,7 @@ struct UsernameScreen: View {
     @FocusState private var authInputIsFocused: Bool
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
                 VStack {
                     Spacer()

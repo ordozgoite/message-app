@@ -87,10 +87,6 @@ struct GroupTestCrypto: View {
         let shared_secret_CA = cryptoManager.generateSharedSecret(privateKey: userCKeys.privateKey!, peerPublicKey: userAKeys.publicKey!)
         let shared_secret_CB = cryptoManager.generateSharedSecret(privateKey: userCKeys.privateKey!, peerPublicKey: userBKeys.publicKey!)
         
-        sharedSecretA = cryptoManager.generateFinalSessionKey(sharedSecrets: [shared_secret_AB, shared_secret_AC])
-        sharedSecretB = cryptoManager.generateFinalSessionKey(sharedSecrets: [shared_secret_BA, shared_secret_BC])
-        sharedSecretC = cryptoManager.generateFinalSessionKey(sharedSecrets: [shared_secret_CA, shared_secret_CB])
-        
         print("🤫 Shared Secret A: \(sharedSecretA)")
         print("🤫 Shared Secret B: \(sharedSecretB)")
         print("🤫 Shared Secret B: \(sharedSecretC)")

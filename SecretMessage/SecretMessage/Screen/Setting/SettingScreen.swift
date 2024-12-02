@@ -12,7 +12,7 @@ struct SettingScreen: View {
     @EnvironmentObject var authVM: AuthViewModel
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 //MARK: - Exit
                 

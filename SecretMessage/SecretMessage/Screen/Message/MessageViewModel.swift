@@ -54,7 +54,7 @@ class MessageViewModel: ObservableObject {
             let cipherData = cryptoManager.convertBase64ToData(base64String: message.text)!
             print("⚠️ cipherData: \(cipherData)")
             let plainText = cryptoManager.decryptMessage(ciphertext: cipherData, key: secret)!
-            let plainMessage = MongoMessage(_id: message._id, chatId: message.chatId, senderUserUid: message.senderUserUid, text: plainText, targetUserUid: message.targetUserUid)
+            let plainMessage = MongoMessage(_id: message._id, chatId: message.chatId, senderUserUid: message.senderUserUid, text: plainText, targetUserUid: message.targetUserUid, senderUsername: message.senderUsername)
             decryptedMessages.append(plainMessage)
         }
         return decryptedMessages
@@ -85,7 +85,7 @@ class MessageViewModel: ObservableObject {
     }
     
     func displayMessage(chatId: String, text: String) {
-        formattedMessages.append(FormattedMessage(id: UUID().uuidString, chatId: chatId, text: text, isCurrentUser: true, isFirst: false, status: .sent))
+        formattedMessages.append(FormattedMessage(id: UUID().uuidString, chatId: chatId, text: text, isCurrentUser: true, isFirst: false, status: .sent, senderUsername: nil))
     }
     
     private func encryptText(_ text: String, withPubKey pubKey: String, forChat chatId: String) -> String? {

@@ -13,7 +13,7 @@ struct ChatScreen: View {
     @StateObject private var chatVM = ChatViewModel()
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
                 Chats()
                 

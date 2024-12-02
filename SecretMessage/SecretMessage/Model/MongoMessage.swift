@@ -13,8 +13,16 @@ struct MongoMessage: Codable {
     let senderUserUid: String
     let text: String
     let targetUserUid: String
+    let senderUsername: String?
     
     func format() -> FormattedMessage {
-        return FormattedMessage(id: self._id, chatId: self.chatId, text: self.text, isCurrentUser: LocalState.currentUserUid == self.senderUserUid, isFirst: false, status: .sent)
+        return FormattedMessage(
+            id: self._id,
+            chatId: self.chatId,
+            text: self.text,
+            isCurrentUser: LocalState.currentUserUid == self.senderUserUid,
+            isFirst: false, status: .sent,
+            senderUsername: self.senderUsername
+        )
     }
 }

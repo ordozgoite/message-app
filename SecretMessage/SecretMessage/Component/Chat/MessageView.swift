@@ -37,7 +37,8 @@ struct MessageView: View {
         BubbleView(
             message: text,
             isCurrentUser: message.isCurrentUser,
-            isFirst: message.isFirst
+            isFirst: message.isFirst,
+            username: message.senderUsername
         )
     }
     

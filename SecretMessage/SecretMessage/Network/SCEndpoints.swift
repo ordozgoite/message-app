@@ -16,6 +16,7 @@ enum SCEndpoints {
     case savePubECDHKey(chatId: String, publicKey: String, token: String)
     case postMessage(chatId: String, text: String, targetUserUid: String, token: String)
     case getMessagesByChat(chatId: String, token: String)
+    case getUsersInChat(chatId: String, token: String)
 }
 
 extension SCEndpoints: Endpoint {
@@ -40,6 +41,8 @@ extension SCEndpoints: Endpoint {
             return "/api/Message/PostMessage"
         case .getMessagesByChat(let chatId, _):
             return "/api/Message/GetMessages/\(chatId)"
+        case .getUsersInChat(let chatId, _):
+            return "/api/Chat/GetUsersInChat/\(chatId)"
         }
     }
     
@@ -49,7 +52,7 @@ extension SCEndpoints: Endpoint {
         switch self {
         case .postNewUser, .postNewChat, .addUserToChat, .savePubECDHKey, .postMessage:
             return .post
-        case .getUserInfo, .getChatsByUser, .getMessagesByChat:
+        case .getUserInfo, .getChatsByUser, .getMessagesByChat, .getUsersInChat:
             return .get
         }
     }
@@ -67,7 +70,7 @@ extension SCEndpoints: Endpoint {
     
     var header: [String : String]? {
         switch self {
-        case .postNewUser(_, let token), .getUserInfo(let token), .postNewChat(_, let token), .getChatsByUser(let token), .addUserToChat(_, _, let token), .savePubECDHKey(_, _, let token), .postMessage(_, _, _, let token), .getMessagesByChat(_, let token):
+        case .postNewUser(_, let token), .getUserInfo(let token), .postNewChat(_, let token), .getChatsByUser(let token), .addUserToChat(_, _, let token), .savePubECDHKey(_, _, let token), .postMessage(_, _, _, let token), .getMessagesByChat(_, let token), .getUsersInChat(_, let token):
             return [
                 "Authorization": "Bearer \(token)",
                 "Accept": "application/x-www-form-urlencoded",

@@ -14,6 +14,7 @@ struct MessageIntermediary {
     var text: String
     var status: MessageStatus?
     var isCurrentUser: Bool
+    var senderUsername: String?
     
     func formatMessage(isFirst: Bool, timeDivider: Int?) -> FormattedMessage {
         return FormattedMessage(
@@ -22,7 +23,8 @@ struct MessageIntermediary {
             text: self.text,
             isCurrentUser: self.isCurrentUser,
             isFirst: isFirst,
-            status: self.status ?? .sent
+            status: self.status ?? .sent,
+            senderUsername: self.senderUsername
         )
     }
 }

@@ -14,7 +14,7 @@ struct AddUserToChatView: View {
     let add: () -> ()
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack(alignment: .center, spacing: 16) {
                 TextField("Username", text: $username)
                     .textInputAutocapitalization(.never)

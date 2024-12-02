@@ -17,6 +17,7 @@ protocol SCServiceable {
     func postNewChat(chatName: String, token: String) async -> Result<MongoChat, RequestError>
     func getChatsByUser(token: String) async -> Result<[MongoChat], RequestError>
     func addUserToChat(chatId: String, username: String, token: String) async -> Result<MongoChat, RequestError>
+    func getUsersInChat(chatId: String, token: String) async -> Result<[String], RequestError>
     func savePubECDHKey(chatId: String, publicKey: String, token: String) async -> Result<MongoChat, RequestError>
     
     // Message
@@ -25,7 +26,7 @@ protocol SCServiceable {
 }
 
 struct SCServices: HTTPClient, SCServiceable {
-   
+    
     static let shared = SCServices()
     private init() {}
     
@@ -51,6 +52,10 @@ struct SCServices: HTTPClient, SCServiceable {
     
     func addUserToChat(chatId: String, username: String, token: String) async -> Result<MongoChat, RequestError> {
         return await sendRequest(endpoint: SCEndpoints.addUserToChat(chatId: chatId, username: username, token: token), responseModel: MongoChat.self)
+    }
+    
+    func getUsersInChat(chatId: String, token: String) async -> Result<[String], RequestError> {
+        return await sendRequest(endpoint: SCEndpoints.getUsersInChat(chatId: chatId, token: token), responseModel: [String].self)
     }
     
     func savePubECDHKey(chatId: String, publicKey: String, token: String) async -> Result<MongoChat, RequestError> {

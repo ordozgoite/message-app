@@ -15,4 +15,5 @@ struct FormattedMessage: Identifiable, Equatable, Hashable {
     var isCurrentUser: Bool
     var isFirst: Bool
     var status: MessageStatus
+    let senderUsername: String?
 }
