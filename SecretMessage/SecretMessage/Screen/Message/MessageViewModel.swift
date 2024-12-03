@@ -23,6 +23,8 @@ class MessageViewModel: ObservableObject {
     @Published var isAddUserSheetDisplayed: Bool = false
     @Published var newUserUsername: String = ""
     
+    @Published var isChatDetailViewDisplayed: Bool = false
+    
     @Published var messageText: String = ""
     @Published var overlayError: (Bool, LocalizedStringKey) = (false, "")
     @Published var messageTimer: Timer?

@@ -97,6 +97,13 @@ struct MessageScreen: View {
                 .foregroundStyle(.gray)
         }
         .padding(.bottom, 6)
+        .onTapGesture {
+            messageVM.isChatDetailViewDisplayed = true
+        }
+        .sheet(isPresented: $messageVM.isChatDetailViewDisplayed) {
+            ChatDetailScreen(chatId: self.chat.id)
+                .environmentObject(authVM)
+        }
     }
     
     //MARK: - Message Composer
